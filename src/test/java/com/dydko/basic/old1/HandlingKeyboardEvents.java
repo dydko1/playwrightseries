@@ -1,4 +1,4 @@
-package com.dydko.basic;
+package com.dydko.basic.old1;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;

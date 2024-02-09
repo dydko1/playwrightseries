@@ -1,4 +1,4 @@
-package com.dydko.basic;
+package com.dydko.basic.old1;
 
 
 import org.apache.logging.log4j.LogManager;

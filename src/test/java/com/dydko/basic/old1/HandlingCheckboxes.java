@@ -1,4 +1,4 @@
-package com.dydko.basic;
+package com.dydko.basic.old1;
 
 import com.microsoft.playwright.Browser;
 
@@ -9,8 +9,9 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 import com.microsoft.playwright.Playwright;
+import org.testng.annotations.Listeners;
 
-
+@Listeners(ListenersBlog.class)
 public class HandlingCheckboxes {
 
 
