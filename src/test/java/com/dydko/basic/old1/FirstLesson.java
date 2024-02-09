@@ -1,11 +1,10 @@
-package com.dydko;
+package com.dydko.basic;
 
 import com.microsoft.playwright.*;
 
-import java.awt.*;
 import java.util.ArrayList;
 
-public class Main {
+public class FirstLesson {
     public static void main(String[] args) throws InterruptedException {
         Playwright playwright = Playwright.create();
         ArrayList<String> arguments = new ArrayList<>();
