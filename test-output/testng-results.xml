@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="3" passed="1" failed="1" skipped="1">
+  <reporter-output>
+    <line>
+      <![CDATA[test10: 10]]>
+    </line>
+    <line>
+      <![CDATA[test100: 100]]>
+    </line>
+    <line>
+      <![CDATA[test10: 20]]>
+    </line>
+    <line>
+      <![CDATA[test100: 200]]>
+    </line>
+    <line>
+      <![CDATA[test10: 30]]>
+    </line>
+    <line>
+      <![CDATA[test100: 300]]>
+    </line>
+    <line>
+      <![CDATA[test100: 400]]>
+    </line>
+    <line>
+      <![CDATA[test10: 40]]>
+    </line>
+    <line>
+      <![CDATA[test1: 1]]>
+    </line>
+    <line>
+      <![CDATA[test1: 2]]>
+    </line>
+    <line>
+      <![CDATA[test1: 3]]>
+    </line>
+    <line>
+      <![CDATA[test1: 4]]>
+    </line>
+  </reporter-output>
+  <suite started-at="2024-02-11T09:05:22 CET" name="testngpackage" finished-at="2024-02-11T09:05:23 CET" duration-ms="124">
+    <groups>
+    </groups>
+    <test started-at="2024-02-11T09:05:22 CET" name="testngTest" finished-at="2024-02-11T09:05:23 CET" duration-ms="124">
+      <class name="com.dydko.basic.reporterlog.EmailReport">
+        <test-method signature="passTest()[pri:0, instance:com.dydko.basic.reporterlog.EmailReport@161b062a]" started-at="2024-02-11T09:05:22 CET" name="passTest" description="test 1 passed" finished-at="2024-02-11T09:05:23 CET" duration-ms="83" status="PASS">
+          <reporter-output>
+            <line>
+              <![CDATA[test1: 1]]>
+            </line>
+            <line>
+              <![CDATA[test1: 2]]>
+            </line>
+            <line>
+              <![CDATA[test1: 3]]>
+            </line>
+            <line>
+              <![CDATA[test1: 4]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- passTest -->
+        <test-method signature="failTest()[pri:0, instance:com.dydko.basic.reporterlog.EmailReport@161b062a]" started-at="2024-02-11T09:05:22 CET" name="failTest" description="test 2 failed" finished-at="2024-02-11T09:05:22 CET" duration-ms="12" status="FAIL">
+          <exception class="java.lang.AssertionError">
+            <message>
+              <![CDATA[expected [true] but found [false]]]>
+            </message>
+            <full-stacktrace>
+              <![CDATA[java.lang.AssertionError: expected [true] but found [false]
+at org.testng.Assert.fail(Assert.java:111)
+at org.testng.Assert.failNotEquals(Assert.java:1578)
+at org.testng.Assert.assertTrue(Assert.java:57)
+at org.testng.Assert.assertTrue(Assert.java:67)
+at com.dydko.basic.reporterlog.EmailReport.failTest(EmailReport.java:39)
+at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:139)
+at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:664)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:228)
+at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:961)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:201)
+at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:148)
+at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
+at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+at org.testng.internal.thread.graph.TestNGFutureTask.run(TestNGFutureTask.java:22)
+at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+at java.base/java.lang.Thread.run(Thread.java:1583)
+]]>
+            </full-stacktrace>
+          </exception> <!-- java.lang.AssertionError -->
+          <reporter-output>
+            <line>
+              <![CDATA[test10: 10]]>
+            </line>
+            <line>
+              <![CDATA[test10: 20]]>
+            </line>
+            <line>
+              <![CDATA[test10: 30]]>
+            </line>
+            <line>
+              <![CDATA[test10: 40]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- failTest -->
+        <test-method signature="skipTest()[pri:0, instance:com.dydko.basic.reporterlog.EmailReport@161b062a]" started-at="2024-02-11T09:05:22 CET" name="skipTest" description="test 3 skipped" finished-at="2024-02-11T09:05:22 CET" duration-ms="5" status="SKIP">
+          <exception class="org.testng.SkipException">
+            <message>
+              <![CDATA[Skipping -This method is skipped testing ]]>
+            </message>
+            <full-stacktrace>
+              <![CDATA[org.testng.SkipException: Skipping -This method is skipped testing 
+at com.dydko.basic.reporterlog.EmailReport.skipTest(EmailReport.java:48)
+at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:139)
+at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:664)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:228)
+at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:961)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:201)
+at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:148)
+at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
+at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+at org.testng.internal.thread.graph.TestNGFutureTask.run(TestNGFutureTask.java:22)
+at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+at java.base/java.lang.Thread.run(Thread.java:1583)
+]]>
+            </full-stacktrace>
+          </exception> <!-- org.testng.SkipException -->
+          <reporter-output>
+            <line>
+              <![CDATA[test100: 100]]>
+            </line>
+            <line>
+              <![CDATA[test100: 200]]>
+            </line>
+            <line>
+              <![CDATA[test100: 300]]>
+            </line>
+            <line>
+              <![CDATA[test100: 400]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- skipTest -->
+      </class> <!-- com.dydko.basic.reporterlog.EmailReport -->
+    </test> <!-- testngTest -->
+  </suite> <!-- testngpackage -->
+</testng-results>
