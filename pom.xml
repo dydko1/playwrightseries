@@ -3,15 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.dydko</groupId>
     <artifactId>PlaywrightSeries</artifactId>
     <version>1.0-SNAPSHOT</version>
-
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <playwrightVersion>1.41.2</playwrightVersion>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <playwrightVersion>1.47.0</playwrightVersion>
+        <log4jVersion>3.0.0-beta2</log4jVersion>
+        <testngVersion>7.10.2</testngVersion>
+        <surefirePluginVersion>3.5.0</surefirePluginVersion>
+        <lombokVersion>1.18.34</lombokVersion>
     </properties>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
@@ -20,26 +24,30 @@
             <artifactId>playwright</artifactId>
             <version>${playwrightVersion}</version>
         </dependency>
-
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/com.microsoft.playwright/driver-bundle &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.microsoft.playwright</groupId>-->
+        <!--            <artifactId>driver-bundle</artifactId>-->
+        <!--            <version>${playwrightVersion}</version>-->
+        <!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.22.1</version>
+            <version>${log4jVersion}</version>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.22.1</version>
+            <version>${log4jVersion}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
-            <version>1.6.2</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4jVersion}</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/javax.activation/activation -->
         <dependency>
             <groupId>javax.activation</groupId>
@@ -50,10 +58,33 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.9.0</version>
+            <version>${testngVersion}</version>
             <scope>test</scope>
         </dependency>
-
-
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombokVersion}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+    <build>
+        <finalName>maven-unit-test</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefirePluginVersion}</version>
+<!--                <configuration>-->
+<!--                <suiteXmlFiles>-->
+<!--                    <suiteXmlFile>src.test.resources.skipException.xml</suiteXmlFile>-->
+<!--                </suiteXmlFiles>-->
+<!--                </configuration>-->
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
