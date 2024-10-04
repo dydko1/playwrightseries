@@ -12,8 +12,6 @@ public class Listener1 implements ITestListener {
         Reporter.log("<a href=\"C:\\temp\\sce2.png\" target=\"_blank\">Screenshot link</a>");
         Reporter.log("<br>");
         Reporter.log("<a href=\"C:\\temp\\sce2.png\" target=\"_blank\"><img height=200 width=200 src=\"C:\\temp\\sce2.png\"></a>");
-
-
     }
 
     public void onTestSuccess(ITestResult result) {

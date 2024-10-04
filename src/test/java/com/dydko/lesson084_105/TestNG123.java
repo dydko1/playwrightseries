@@ -6,13 +6,14 @@ import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.SkipException;
 import org.testng.annotations.Ignore;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.internal.TestResult;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Slf4j
+@Listeners(Listener1.class)
 public class TestNG123 {
 
     @Test(enabled = false)
