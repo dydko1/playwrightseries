@@ -13,7 +13,8 @@ import org.testng.internal.TestResult;
 import java.util.Arrays;
 import java.util.List;
 
-@Listeners(Listener1.class)
+//@Listeners(Listener1.class)
+@Listeners(org.uncommons.reportng.HTMLReporter.class)
 public class TestNG123 {
 
     @Test(enabled = false)

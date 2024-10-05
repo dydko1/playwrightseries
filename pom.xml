@@ -16,6 +16,7 @@
         <testngVersion>7.10.2</testngVersion>
         <surefirePluginVersion>3.5.0</surefirePluginVersion>
         <lombokVersion>1.18.34</lombokVersion>
+        <reportngNGVersion>2.7.0</reportngNGVersion>
     </properties>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
@@ -68,6 +69,14 @@
             <version>${lombokVersion}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.sdrss/reportng -->
+        <dependency>
+            <groupId>com.github.sdrss</groupId>
+            <artifactId>reportng</artifactId>
+            <version>${reportngNGVersion}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 <!--    <build>-->
 <!--        <finalName>maven-unit-test</finalName>-->
