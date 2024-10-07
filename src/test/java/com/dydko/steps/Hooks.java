@@ -1,4 +1,4 @@
-package com.dydko.runner;
+package com.dydko.steps;
 
 import java.nio.file.Paths;
 
@@ -11,10 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Hooks {
-
-
-    public Page page;
-
     @Before
     public void setUp() {
         log.info("\n----------\nBefore {}\n----------", "Before");

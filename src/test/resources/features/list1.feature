@@ -1,15 +1,13 @@
-@release2
-Feature: Searching New Cars
-  In order to search new cars. As a User. I have to naviagate to carwale.com.
+@release3
+Feature: List1
+  List
 
-  Scenario: Finding new cars test3
+  Scenario: Lis
     Given user navigates to carwale website
-    When user mouseover to newcars
-    Then user clicks on Find new cars link
-    And user clicks on "<carBrand>" car
-    And user validates carTitle as "<carTitle>"
-
-  Scenario: Test4
-    Given user navigates to carwale website
-    When user mouseover to newcars
-    Then user clicks on Find new cars link
+    And user mouseover to newcars
+    And get list
+      | Miro  |
+      | Dydko |
+      | Dydko11 |
+      | Dydko22 |
+      | Dydko33 |

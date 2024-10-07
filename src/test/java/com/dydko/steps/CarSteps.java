@@ -1,9 +1,11 @@
-package steps;
+package com.dydko.steps;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @Slf4j
 public class CarSteps {
@@ -21,6 +23,13 @@ public class CarSteps {
     @Then("user clicks on Find new cars link")
     public void user_clicks_on_findnewcars_link() {
         log.info("Step_3 {}", "user clicks on Findnewcars link");
+    }
+
+    @Then("get list")
+    public void geList(List<String> lists) {
+        System.out.println("-------------------------------------------------------------");
+        lists.forEach(System.out::println);
+        System.out.println("-------------------------------------------------------------");
     }
 
     @Then("user clicks on {string} car")
