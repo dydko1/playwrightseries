@@ -1,4 +1,4 @@
-package creationalpatterns.factorymethod;
+package creationalpatterns.factorymethod.a1.buttons;
 
 public interface Button {
 
