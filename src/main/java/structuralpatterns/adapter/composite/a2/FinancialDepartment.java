@@ -1,4 +1,4 @@
-package structuralpatterns.composite.a2;
+package structuralpatterns.adapter.composite.a2;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

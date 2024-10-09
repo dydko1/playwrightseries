@@ -1,4 +1,4 @@
-package structuralpatterns.bridge;
+package structuralpatterns.bridge.devices;
 
 public interface Device {
     boolean isEnabled();

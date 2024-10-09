@@ -1,10 +1,10 @@
-package behaviourpatterns;
+package behaviourpatterns.chainofresponsibility;
 
 import behaviourpatterns.chainofresponsibility.middleware.Middleware;
 import behaviourpatterns.chainofresponsibility.middleware.RoleCheckMiddleware;
 import behaviourpatterns.chainofresponsibility.middleware.ThrottlingMiddleware;
 import behaviourpatterns.chainofresponsibility.middleware.UserExistsMiddleware;
-import behaviourpatterns.server.Server;
+import behaviourpatterns.chainofresponsibility.server.Server;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package structuralpatterns.composite.a2;
+package structuralpatterns.adapter.composite.a2;
 
 import java.util.ArrayList;
 import java.util.List;

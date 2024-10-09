@@ -1,4 +1,6 @@
-package structuralpatterns.facade;
+package structuralpatterns.facade.some_complex_media_library;
+
+import structuralpatterns.facade.some_complex_media_library.VideoFile;
 
 import java.io.File;
 

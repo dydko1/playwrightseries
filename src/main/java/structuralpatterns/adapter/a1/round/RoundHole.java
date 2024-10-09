@@ -1,4 +1,4 @@
-package structuralpatterns.adapter.a1;
+package structuralpatterns.adapter.a1.round;
 
 public class RoundHole {
 
@@ -13,6 +13,6 @@ public class RoundHole {
     }
 
     public boolean fits(RoundPeg roundPeg) {
-        return getRadius()>=roundPeg
+        return this.getRadius() >= roundPeg.getRadius();
     }
 }

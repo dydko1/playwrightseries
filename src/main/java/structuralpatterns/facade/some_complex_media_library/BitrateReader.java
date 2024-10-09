@@ -1,4 +1,7 @@
-package structuralpatterns.facade;
+package structuralpatterns.facade.some_complex_media_library;
+
+import structuralpatterns.facade.some_complex_media_library.Codec;
+import structuralpatterns.facade.some_complex_media_library.VideoFile;
 
 public class BitrateReader {
     public static VideoFile read(VideoFile file, Codec codec) {

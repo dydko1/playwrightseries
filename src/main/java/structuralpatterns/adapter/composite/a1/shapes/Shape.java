@@ -1,4 +1,4 @@
-package structuralpatterns.composite.a1.shapes;
+package structuralpatterns.adapter.composite.a1.shapes;
 
 import java.awt.*;
 

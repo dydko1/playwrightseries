@@ -1,4 +1,4 @@
-package structuralpatterns.facade;
+package structuralpatterns.facade.some_complex_media_library;
 
 public class VideoFile {
     private String name;

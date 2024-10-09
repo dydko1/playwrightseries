@@ -1,4 +1,4 @@
-package structuralpatterns.composite.a2;
+package structuralpatterns.adapter.composite.a2;
 
 public class CompositeDemo {
     public static void main(String args[]) {

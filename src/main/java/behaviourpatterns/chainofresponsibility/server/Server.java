@@ -1,4 +1,4 @@
-package behaviourpatterns.server;
+package behaviourpatterns.chainofresponsibility.server;
 
 import behaviourpatterns.chainofresponsibility.middleware.Middleware;
 

@@ -1,6 +1,6 @@
-package structuralpatterns.composite.a1;
+package structuralpatterns.adapter.composite.a1;
 
-import structuralpatterns.composite.a1.editor.ImageEditor;
+import structuralpatterns.adapter.composite.a1.editor.ImageEditor;
 
 public class Demo {
     public static void main(String[] args) {
