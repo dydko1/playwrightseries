@@ -1,15 +1,16 @@
-package builder.a1;
+package creationalpatterns.builder.a2;
 
-public class ComputerDirector {
+public class MyLaptopComputer {
 
     private ComputerBuilder computerBuilder;
 
-    public ComputerDirector(ComputerBuilder computerBuilder) {
+    public MyLaptopComputer(ComputerBuilder computerBuilder) {
         this.computerBuilder = computerBuilder;
     }
 
     public Computer constructComputer() {
-        return computerBuilder.buildProcessor("Intel i7")
+        return computerBuilder
+                .buildProcessor("Intel i7")
                 .buildMemory(16)
                 .buildStorage(512)
                 .buildGraphicsCard("NVIDIA GTX 1660")
