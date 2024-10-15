@@ -1,4 +1,4 @@
-package compositionvsinheritance.a1.inheritance;
+package compositionvsinheritance.inheritance;
 
 public class MainEmployee {
     public static void main(String[] args) {

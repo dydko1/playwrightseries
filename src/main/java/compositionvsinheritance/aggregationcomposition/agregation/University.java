@@ -1,4 +1,4 @@
-package compositionvsinheritance.aggregationcomposition.agreg;
+package compositionvsinheritance.aggregationcomposition.agregation;
 
 import java.util.ArrayList;
 import java.util.List;

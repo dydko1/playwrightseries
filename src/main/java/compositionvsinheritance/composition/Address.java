@@ -1,4 +1,4 @@
-package compositionvsinheritance.a1.composition;
+package compositionvsinheritance.composition;
 
 class Address {
     String street;

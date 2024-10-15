@@ -1,4 +1,4 @@
-package compositionvsinheritance.a1.mediumcomposition.prop;
+package compositionvsinheritance.mediumcomposition.prop;
 
 public class UniqueAnimalsProperties {
 

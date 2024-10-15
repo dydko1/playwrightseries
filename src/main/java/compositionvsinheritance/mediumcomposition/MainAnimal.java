@@ -1,7 +1,7 @@
-package compositionvsinheritance.a1.mediumcomposition;
+package compositionvsinheritance.mediumcomposition;
 
-import compositionvsinheritance.a1.mediumcomposition.animal.Bear;
-import compositionvsinheritance.a1.mediumcomposition.prop.AnimalsProperties;
+import compositionvsinheritance.mediumcomposition.animal.Bear;
+import compositionvsinheritance.mediumcomposition.prop.AnimalsProperties;
 
 public class MainAnimal {
     public static void main(String[] args) {

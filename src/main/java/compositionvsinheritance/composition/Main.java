@@ -1,4 +1,4 @@
-package compositionvsinheritance.a1.composition;
+package compositionvsinheritance.composition;
 
 public class Main {
     public static void main(String[] args) {

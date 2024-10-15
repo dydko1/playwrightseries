@@ -1,7 +1,7 @@
-package compositionvsinheritance.a1.mediumcomposition.animal;
+package compositionvsinheritance.mediumcomposition.animal;
 
-import compositionvsinheritance.a1.mediumcomposition.prop.AnimalsProperties;
-import compositionvsinheritance.a1.mediumcomposition.prop.UniqueAnimalsProperties;
+import compositionvsinheritance.mediumcomposition.prop.AnimalsProperties;
+import compositionvsinheritance.mediumcomposition.prop.UniqueAnimalsProperties;
 
 public class Bear {
 

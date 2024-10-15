@@ -1,4 +1,4 @@
-package compositionvsinheritance.a1.inheritance;
+package compositionvsinheritance.inheritance;
 
 public class Person {
 
