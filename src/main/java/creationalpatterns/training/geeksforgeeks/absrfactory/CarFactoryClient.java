@@ -14,9 +14,9 @@ public class CarFactoryClient {
         northAmericanCar.assemble();
         northAmericanSpec.display();
 
-        CarFactory eu=new EuropeCarFactory();
-        Car euCar=eu.createCar();
-        CarSpecification euSpec=eu.createCarSpecification();
+        CarFactory eu = new EuropeCarFactory();
+        Car euCar = eu.createCar();
+        CarSpecification euSpec = eu.createCarSpecification();
         euCar.assemble();
         euSpec.display();
     }
