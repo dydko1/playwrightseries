@@ -1,2 +1,9 @@
-package creationalpatterns.training.tutorialspoint.factorypattern;public class Rectangle {
+package creationalpatterns.training.tutorialspoint.factorypattern;
+
+public class Rectangle implements Shape {
+
+    @Override
+    public void draw() {
+        System.out.println("I'm in " + getClass().getSimpleName());
+    }
 }

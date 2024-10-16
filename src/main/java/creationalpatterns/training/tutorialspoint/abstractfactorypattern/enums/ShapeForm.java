@@ -1,4 +1,4 @@
-package creationalpatterns.training.tutorialspoint.abstractfactorypattern;
+package creationalpatterns.training.tutorialspoint.abstractfactorypattern.enums;
 
 public enum ShapeForm {
     SQUARE,

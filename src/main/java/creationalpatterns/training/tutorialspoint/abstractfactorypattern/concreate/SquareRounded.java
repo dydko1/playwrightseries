@@ -2,9 +2,9 @@ package creationalpatterns.training.tutorialspoint.abstractfactorypattern.concre
 
 import creationalpatterns.training.tutorialspoint.abstractfactorypattern.interfaces.Shape;
 
-public class RoundedSquare implements Shape {
+public class SquareRounded implements Shape {
     @Override
-    public void Draw() {
-        System.out.println("Inside RoundedSquare::draw() method.");
+    public void draw() {
+        System.out.println("Inside RoundedSquare::draw() method:" + getClass().getSimpleName());
     }
 }

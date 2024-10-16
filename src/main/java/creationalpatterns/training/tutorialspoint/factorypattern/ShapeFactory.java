@@ -1,2 +1,6 @@
-package creationalpatterns.training.tutorialspoint.factorypattern;public class ShapeFactory {
+package creationalpatterns.training.tutorialspoint.factorypattern;
+
+public interface ShapeFactory {
+
+    Shape shapeFactory();
 }

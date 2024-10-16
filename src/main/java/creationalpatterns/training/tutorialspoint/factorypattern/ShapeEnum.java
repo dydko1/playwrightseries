@@ -1,2 +1,7 @@
-package creationalpatterns.training.tutorialspoint.factorypattern;public class ShapeEnum {
+package creationalpatterns.training.tutorialspoint.factorypattern;
+
+public enum ShapeEnum {
+    CIRCLE,
+    SQUARE,
+    RECTANGLE
 }

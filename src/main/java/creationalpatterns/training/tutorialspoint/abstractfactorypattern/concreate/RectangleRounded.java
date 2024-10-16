@@ -2,10 +2,10 @@ package creationalpatterns.training.tutorialspoint.abstractfactorypattern.concre
 
 import creationalpatterns.training.tutorialspoint.abstractfactorypattern.interfaces.Shape;
 
-public class RoundedRectangle implements Shape {
+public class RectangleRounded implements Shape {
 
     @Override
-    public void Draw() {
-        System.out.println("Inside RoundedRectangle::draw() method.");
+    public void draw() {
+        System.out.println("Inside RoundedRectangle::draw() method:" + getClass().getSimpleName());
     }
 }
