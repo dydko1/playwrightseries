@@ -1,4 +1,4 @@
-package trash;
+package trash.tr1;
 
 public class Point {
     private static int createdPoints = 0;

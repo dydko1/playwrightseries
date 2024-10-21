@@ -1,4 +1,4 @@
-package structuralpatterns.tarinings.javaedupl.bridge;
+package structuralpatterns.tarinings.javaedupl.bridged;
 
 public class RemoteController implements Remote {
         private Device device;

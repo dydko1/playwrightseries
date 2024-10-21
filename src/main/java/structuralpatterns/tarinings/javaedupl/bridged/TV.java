@@ -1,30 +1,31 @@
-package structuralpatterns.tarinings.javaedupl.bridge;
+package structuralpatterns.tarinings.javaedupl.bridged;
 
-public class Radio implements Device {
+public class TV implements Device {
+
     private boolean enabled = false;
     private int volume = 5;
     private int channel = 1;
- 
+
     @Override
     public boolean isEnabled() {
         return enabled;
     }
- 
+
     @Override
     public void enable() {
         enabled = true;
     }
- 
+
     @Override
     public void disable() {
         enabled = false;
     }
- 
+
     @Override
     public int getVolume() {
         return volume;
     }
- 
+
     @Override
     public void setVolume(int volume) {
         if (volume > 10) {
@@ -35,12 +36,12 @@ public class Radio implements Device {
             this.volume = volume;
         }
     }
- 
+
     @Override
     public int getChannel() {
         return channel;
     }
-       
+
     @Override
     public void setChannel(int channel) {
         if (channel > 100) {
@@ -51,12 +52,12 @@ public class Radio implements Device {
             this.channel = channel;
         }
     }
- 
+
     @Override
     public void printDetails() {
-       System.out.println("It's radio");
-       System.out.println("Radio is " + (enabled ? "enabled" : "disabled"));
-       System.out.println("Radio volume is " + volume + "%");
-       System.out.println("Radio channel is " + channel);
+        System.out.println("It's TV");
+        System.out.println("TV is " + (enabled ? "enabled" : "disabled"));
+        System.out.println("TV volume is " + volume + "%");
+        System.out.println("TV channel is " + channel);
     }
 }

@@ -1,4 +1,4 @@
-package trash;
+package trash.tr1;
 
 public class MainTest {
     public static void main(String[] args) {
