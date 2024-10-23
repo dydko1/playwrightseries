@@ -1,4 +1,4 @@
-package structuralpatterns.leetcode;
+package trash123.leetcode;
 
 import java.util.Stack;
 

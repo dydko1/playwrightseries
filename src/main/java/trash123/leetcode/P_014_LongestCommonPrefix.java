@@ -1,4 +1,4 @@
-package structuralpatterns.leetcode;
+package trash123.leetcode;
 
 public class P_014_LongestCommonPrefix {
     public static void main(String[] args) {

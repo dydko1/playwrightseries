@@ -1,6 +1,4 @@
-package structuralpatterns.leetcode;
-
-import java.util.HashMap;
+package trash123.leetcode;
 
 public class P_28_FindtheIndexoft {
 

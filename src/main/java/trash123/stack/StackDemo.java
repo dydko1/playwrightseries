@@ -1,7 +1,6 @@
-package structuralpatterns.stack;
+package trash123.stack;
 
 import java.util.*;
-import java.io.*;
 
 public class StackDemo {
 
