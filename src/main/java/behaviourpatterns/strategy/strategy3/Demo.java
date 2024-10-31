@@ -1,4 +1,4 @@
-package behaviourpatterns.strategy;
+package behaviourpatterns.strategy.strategy3;
 
 import java.io.BufferedReader;
 import java.io.IOException;

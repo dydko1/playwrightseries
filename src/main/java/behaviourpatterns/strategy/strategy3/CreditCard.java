@@ -1,4 +1,4 @@
-package behaviourpatterns.strategy;
+package behaviourpatterns.strategy.strategy3;
 
 public class CreditCard {
     private int amount;

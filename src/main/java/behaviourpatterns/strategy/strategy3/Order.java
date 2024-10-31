@@ -1,4 +1,4 @@
-package behaviourpatterns.strategy;
+package behaviourpatterns.strategy.strategy3;
 
 public class Order {
     private int totalCost = 0;
