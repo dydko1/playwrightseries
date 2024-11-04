@@ -1,4 +1,4 @@
-package trash123.interfaces.exc10;
+package trash123.cryptoaesrsa;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;

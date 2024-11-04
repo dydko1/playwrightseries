@@ -1,4 +1,4 @@
-package trash123.interfaces.exc10;
+package trash123.cryptoaesrsa;
 
 interface Encryptable {
     // Declare the abstract method "encrypt" that classes implementing this interface must provide

@@ -1,8 +1,6 @@
-package trash123.interfaces.exc10;
+package trash123.cryptoaesrsa;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
