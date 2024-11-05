@@ -1,10 +1,10 @@
-package behaviourpatterns.observer;
+package behaviourpatterns.observer.exam01;
 
-import behaviourpatterns.observer.helper.Message;
-import behaviourpatterns.observer.top.ConcreteObserver;
-import behaviourpatterns.observer.top.ConcreteSubject;
-import behaviourpatterns.observer.top.Observer;
-import behaviourpatterns.observer.top.Subject;
+import behaviourpatterns.observer.exam01.helper.Message;
+import behaviourpatterns.observer.exam01.top.ConcreteObserver;
+import behaviourpatterns.observer.exam01.top.ConcreteSubject;
+import behaviourpatterns.observer.exam01.top.Observer;
+import behaviourpatterns.observer.exam01.top.Subject;
 
 public class MainObs {
     public static void main(String[] args) {

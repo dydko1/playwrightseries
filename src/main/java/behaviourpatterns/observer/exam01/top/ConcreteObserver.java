@@ -1,6 +1,6 @@
-package behaviourpatterns.observer.top;
+package behaviourpatterns.observer.exam01.top;
 
-import behaviourpatterns.observer.helper.Message;
+import behaviourpatterns.observer.exam01.helper.Message;
 
 public class ConcreteObserver implements Observer {
 

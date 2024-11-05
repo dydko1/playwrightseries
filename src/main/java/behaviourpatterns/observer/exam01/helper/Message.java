@@ -1,4 +1,4 @@
-package behaviourpatterns.observer.helper;
+package behaviourpatterns.observer.exam01.helper;
 
 public class Message {
 
