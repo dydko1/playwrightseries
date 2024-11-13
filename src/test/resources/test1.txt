@@ -1,3 +1,17 @@
-Python Exercises
-sdfkjds
-dkfj
+dsfajdshfjksafhj-----------------
+Początek
+Lorem Ipsum is simply dummy text of the printing
+and typesetting industry. Lorem Ipsum has been the indu
+stry's standard dummy text ever since the 1500s, when an un
+known printer took a galley of type and sc
+rambled it to make a type specimen book. It
+ has survived not only five centuri
+ es, but also the leap into electron
+ ic typesetting, remaining essentially un
+ changed. It was popularised in the 1960s with
+  the release of Letraset sheets containing Lorem
+  Ipsum passages, and more recently with desktop publis
+hing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+Koniec
+-----------------
