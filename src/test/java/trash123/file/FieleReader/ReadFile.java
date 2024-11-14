@@ -33,4 +33,9 @@ public class ReadFile {
         s1 = "dsfajdshfjksafhj" + s1;
         Files.writeString(Paths.get(PATH1), s1, StandardCharsets.UTF_8);
     }
+
+    @Test
+    public void readFile3() {
+        System.out.println(System.getProperty("dddd"));
+    }
 }
