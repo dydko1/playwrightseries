@@ -15,12 +15,14 @@ public class PlaywrightManager {
 
     private static final List<String> arguments = List.of("--start-maximized");
 
-    // 🔹 Domyślny browser (można zmienić przez -Dbrowser=chrome)
+    // 🔹 Domyślnie Firefox, można zmienić: -Dbrowser=chrome lub webkit
     private static final String BROWSER = System.getProperty("browser", "firefox");
+    private static final boolean HEADLESS = Boolean.parseBoolean(System.getProperty("headless", "false"));
 
     public static Page getPage() {
         if (pageThread.get() == null) {
-            log.info("🔹 Launching Playwright [{}] in thread: {}", BROWSER, Thread.currentThread().getId());
+            long threadId = Thread.currentThread().getId();
+            log.info("🚀 Launching Playwright [{} - headless={}] in thread: {}", BROWSER, HEADLESS, threadId);
 
             Playwright playwright = Playwright.create();
             Browser browser;
@@ -28,15 +30,27 @@ public class PlaywrightManager {
             switch (BROWSER.toLowerCase()) {
                 case "chrome":
                     browser = playwright.chromium().launch(
-                            new BrowserType.LaunchOptions().setChannel("chrome").setHeadless(false).setArgs(arguments));
+                            new BrowserType.LaunchOptions()
+                                    .setChannel("chrome")
+                                    .setHeadless(HEADLESS)
+                                    .setArgs(arguments)
+                    );
                     break;
                 case "webkit":
                     browser = playwright.webkit().launch(
-                            new BrowserType.LaunchOptions().setHeadless(false).setArgs(arguments));
+                            new BrowserType.LaunchOptions()
+                                    .setHeadless(HEADLESS)
+                                    .setArgs(arguments)
+                    );
                     break;
-                default: // firefox
+                default: // ✅ Firefox domyślnie
                     browser = playwright.firefox().launch(
-                            new BrowserType.LaunchOptions().setHeadless(false).setChannel("firefox").setArgs(arguments));
+                            new BrowserType.LaunchOptions()
+                                    .setChannel("firefox")
+                                    .setHeadless(HEADLESS)
+                                    .setArgs(arguments)
+                    );
+                    break;
             }
 
             BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(null));
@@ -47,11 +61,11 @@ public class PlaywrightManager {
             contextThread.set(context);
             pageThread.set(page);
 
-            // domyślne timeouty
+            // 🔹 Domyślne timeouty
             page.setDefaultTimeout(7000);
             page.setDefaultNavigationTimeout(15000);
 
-            log.info("✅ Browser [{}] started successfully for thread {}", BROWSER, Thread.currentThread().getId());
+            log.info("✅ Browser [{}] started successfully for thread {}", BROWSER, threadId);
         }
 
         return pageThread.get();
