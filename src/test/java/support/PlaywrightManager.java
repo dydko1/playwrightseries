@@ -7,97 +7,85 @@ import java.util.List;
 
 @Slf4j
 public class PlaywrightManager {
-    private static Playwright playwright;
-    private static Browser browser;
-    private static BrowserContext context;
-    private static Page page;
+
+    private static final ThreadLocal<Playwright> playwrightThread = new ThreadLocal<>();
+    private static final ThreadLocal<Browser> browserThread = new ThreadLocal<>();
+    private static final ThreadLocal<BrowserContext> contextThread = new ThreadLocal<>();
+    private static final ThreadLocal<Page> pageThread = new ThreadLocal<>();
 
     private static final List<String> arguments = List.of("--start-maximized");
 
+    // 🔹 Domyślny browser (można zmienić przez -Dbrowser=chrome)
+    private static final String BROWSER = System.getProperty("browser", "firefox");
+
     public static Page getPage() {
-        if (page == null) {
-            log.info("Launching default browser (Chromium)");
+        if (pageThread.get() == null) {
+            log.info("🔹 Launching Playwright [{}] in thread: {}", BROWSER, Thread.currentThread().getId());
 
-            playwright = Playwright.create();
-            browser = playwright.chromium().launch(
-                    new BrowserType.LaunchOptions()
-                            .setHeadless(false)
-                            .setArgs(arguments)
-            );
+            Playwright playwright = Playwright.create();
+            Browser browser;
 
-            context = browser.newContext(
-                    new Browser.NewContextOptions().setViewportSize(null)
-            );
-            page = context.newPage();
+            switch (BROWSER.toLowerCase()) {
+                case "chrome":
+                    browser = playwright.chromium().launch(
+                            new BrowserType.LaunchOptions().setChannel("chrome").setHeadless(false).setArgs(arguments));
+                    break;
+                case "webkit":
+                    browser = playwright.webkit().launch(
+                            new BrowserType.LaunchOptions().setHeadless(false).setArgs(arguments));
+                    break;
+                default: // firefox
+                    browser = playwright.firefox().launch(
+                            new BrowserType.LaunchOptions().setHeadless(false).setChannel("firefox").setArgs(arguments));
+            }
 
-            log.info("Browser (Chromium) started successfully");
+            BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(null));
+            Page page = context.newPage();
 
-            // automatyczne zamykanie przy zakończeniu JVM (np. stop w IntelliJ)
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    close();
-                    log.info("Playwright closed via shutdown hook.");
-                } catch (Exception e) {
-                    log.error("Error closing Playwright during shutdown", e);
-                }
-            }));
+            playwrightThread.set(playwright);
+            browserThread.set(browser);
+            contextThread.set(context);
+            pageThread.set(page);
+
+            // domyślne timeouty
+            page.setDefaultTimeout(7000);
+            page.setDefaultNavigationTimeout(15000);
+
+            log.info("✅ Browser [{}] started successfully for thread {}", BROWSER, Thread.currentThread().getId());
         }
-        return page;
+
+        return pageThread.get();
     }
 
     public static void close() {
-        log.info("Attempting to close Playwright...");
+        long id = Thread.currentThread().getId();
+        log.info("🧩 Closing Playwright in thread: {}", id);
+
         try {
-            if (page != null) {
-                page.close();
-                page = null;
-                log.info("Page closed");
+            if (pageThread.get() != null) {
+                pageThread.get().close();
+                pageThread.remove();
+                log.debug("Page closed");
             }
-
-            if (context != null) {
-                context.close();
-                context = null;
-                log.info("Browser context closed");
+            if (contextThread.get() != null) {
+                contextThread.get().close();
+                contextThread.remove();
+                log.debug("Browser context closed");
             }
-
-            if (browser != null) {
-                Thread browserCloser = new Thread(() -> {
-                    try {
-                        browser.close();
-                        log.info("Browser closed");
-                    } catch (PlaywrightException e) {
-                        if (e.getMessage().contains("connection closed")) {
-                            log.warn("Browser already closed (Playwright connection closed)");
-                        } else {
-                            log.error("Error while closing browser", e);
-                        }
-                    } catch (Exception e) {
-                        log.error("Error while closing browser", e);
-                    }
-                });
-                browserCloser.start();
-                browserCloser.join(5000);
-                if (browserCloser.isAlive()) {
-                    log.warn("Browser did not close within timeout — will exit naturally soon...");
-                }
-                browser = null;
+            if (browserThread.get() != null) {
+                browserThread.get().close();
+                browserThread.remove();
+                log.debug("Browser closed");
             }
-
-            if (playwright != null) {
-                try {
-                    playwright.close();
-                    log.info("Playwright closed");
-                } catch (Exception e) {
-                    log.error("Error closing Playwright: ", e);
-                } finally {
-                    playwright = null;
-                }
+            if (playwrightThread.get() != null) {
+                playwrightThread.get().close();
+                playwrightThread.remove();
+                log.debug("Playwright closed");
             }
-
-            log.info("Playwright resources released successfully.");
+            log.info("✅ Playwright cleanup completed for thread {}", id);
 
         } catch (Exception e) {
-            log.error("Error while closing Playwright: ", e);
+            log.error("⚠️ Error during Playwright cleanup: ", e);
         }
     }
 }

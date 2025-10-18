@@ -1,0 +1,1 @@
+mvn clean test -Dthreads=4
