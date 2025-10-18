@@ -13,7 +13,7 @@ public class CheckboxSteps {
     private final Page page = PlaywrightManager.getPage();
 
     @Given("user opens the checkbox practice page")
-    public void openCheckboxPage() {
+    public void openCheckboxPage() throws InterruptedException {
         log.info("Navigating to checkbox practice page...");
         page.navigate("https://rahulshettyacademy.com/AutomationPractice/");
     }

@@ -19,7 +19,7 @@ public class WikiSteps {
     }
 
     @When("user views the language dropdown")
-    public void userViewsTheLanguageDropdown() {
+    public void userViewsTheLanguageDropdown() throws InterruptedException {
         log.info("Checking language dropdown visibility...");
 //        page.locator("#searchLanguage").isVisible();
     }

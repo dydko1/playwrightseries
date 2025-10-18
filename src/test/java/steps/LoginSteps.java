@@ -13,7 +13,7 @@ public class LoginSteps {
     private final Page page = PlaywrightManager.getPage();
 
     @Given("user opens login page")
-    public void userOpensLoginPage() {
+    public void userOpensLoginPage() throws InterruptedException {
         log.info("Opening login page...");
         page.navigate("https://rahulshettyacademy.com/locatorspractice/");
     }

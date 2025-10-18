@@ -1,91 +1,53 @@
 package support;
-
 import com.microsoft.playwright.*;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
+public final class PlaywrightManager {
 
-@Slf4j
-public class PlaywrightManager {
+    private static final ThreadLocal<Playwright> PW = ThreadLocal.withInitial(Playwright::create);
+    private static final ThreadLocal<Browser> BROWSER = new ThreadLocal<>();
+    private static final ThreadLocal<BrowserContext> CTX = new ThreadLocal<>();
+    private static final ThreadLocal<Page> PAGE = new ThreadLocal<>();
 
-    private static final ThreadLocal<Playwright> playwrightThread = new ThreadLocal<>();
-    private static final ThreadLocal<Browser> browserThread = new ThreadLocal<>();
-    private static final ThreadLocal<BrowserContext> contextThread = new ThreadLocal<>();
-    private static final ThreadLocal<Page> pageThread = new ThreadLocal<>();
+    private PlaywrightManager() {}
 
-    private static final List<String> arguments = List.of("--start-maximized");
+    /** Uruchamia Firefoxa (widoczne okno) per wątek/scenariusz */
+    public static void launch() {
+        Playwright pw = PW.get();
 
-    // 🔹 Domyślny browser (można zmienić przez -Dbrowser=chrome)
-    private static final String BROWSER = System.getProperty("browser", "firefox");
+        // ✅ Firefox + widoczne okno
+        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions()
+                .setHeadless(false);
 
-    public static Page getPage() {
-        if (pageThread.get() == null) {
-            log.info("🔹 Launching Playwright [{}] in thread: {}", BROWSER, Thread.currentThread().getId());
+        Browser browser = pw.firefox().launch(options);
+        BROWSER.set(browser);
 
-            Playwright playwright = Playwright.create();
-            Browser browser;
+        BrowserContext context = browser.newContext();
+        CTX.set(context);
 
-            switch (BROWSER.toLowerCase()) {
-                case "chrome":
-                    browser = playwright.chromium().launch(
-                            new BrowserType.LaunchOptions().setChannel("chrome").setHeadless(false).setArgs(arguments));
-                    break;
-                case "webkit":
-                    browser = playwright.webkit().launch(
-                            new BrowserType.LaunchOptions().setHeadless(false).setArgs(arguments));
-                    break;
-                default: // firefox
-                    browser = playwright.firefox().launch(
-                            new BrowserType.LaunchOptions().setHeadless(false).setChannel("firefox").setArgs(arguments));
-            }
-
-            BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(null));
-            Page page = context.newPage();
-
-            playwrightThread.set(playwright);
-            browserThread.set(browser);
-            contextThread.set(context);
-            pageThread.set(page);
-
-            // domyślne timeouty
-            page.setDefaultTimeout(7000);
-            page.setDefaultNavigationTimeout(15000);
-
-            log.info("✅ Browser [{}] started successfully for thread {}", BROWSER, Thread.currentThread().getId());
-        }
-
-        return pageThread.get();
+        Page page = context.newPage();
+        PAGE.set(page);
     }
 
+    /** Zwraca aktywną stronę dla bieżącego wątku */
+    public static Page getPage() {
+        Page p = PAGE.get();
+        if (p == null)
+            throw new IllegalStateException("Playwright not launched. Call PlaywrightManager.launch() first.");
+        return p;
+    }
+
+    /** Zamyka tylko instancje bieżącego wątku */
     public static void close() {
-        long id = Thread.currentThread().getId();
-        log.info("🧩 Closing Playwright in thread: {}", id);
-
         try {
-            if (pageThread.get() != null) {
-                pageThread.get().close();
-                pageThread.remove();
-                log.debug("Page closed");
-            }
-            if (contextThread.get() != null) {
-                contextThread.get().close();
-                contextThread.remove();
-                log.debug("Browser context closed");
-            }
-            if (browserThread.get() != null) {
-                browserThread.get().close();
-                browserThread.remove();
-                log.debug("Browser closed");
-            }
-            if (playwrightThread.get() != null) {
-                playwrightThread.get().close();
-                playwrightThread.remove();
-                log.debug("Playwright closed");
-            }
-            log.info("✅ Playwright cleanup completed for thread {}", id);
-
-        } catch (Exception e) {
-            log.error("⚠️ Error during Playwright cleanup: ", e);
+            if (PAGE.get() != null) PAGE.get().close();
+            if (CTX.get() != null) CTX.get().close();
+            if (BROWSER.get() != null) BROWSER.get().close();
+            if (PW.get() != null) PW.get().close();
+        } finally {
+            PAGE.remove();
+            CTX.remove();
+            BROWSER.remove();
+            PW.remove();
         }
     }
 }
