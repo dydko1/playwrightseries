@@ -70,6 +70,13 @@ pipeline {
             }
         }
 
+    stage('Fix Permissions') {
+        steps {
+            echo '🔧 Fixing permissions for Allure results...'
+            sh 'sudo chown -R jenkins:jenkins target/allure-results || true'
+            sh 'sudo chmod -R 777 target/allure-results || true'
+        }
+    }
         stage('Publish Allure Report') {
             steps {
                 echo "🌐 Publishing Allure report in Jenkins..."
