@@ -1,9 +1,8 @@
 pipeline {
-    agent {
-        docker {
-            image 'dydko/maven-playwright:latest'
-            args '-u root --entrypoint="" -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/jenkins/.m2:/root/.m2'
-        }
+    agent any
+
+    tools {
+        allure 'allure' // 👈 musi odpowiadać nazwie z Manage Jenkins → Tools → Allure Commandline
     }
 
     environment {
@@ -20,9 +19,16 @@ pipeline {
             }
         }
 
-        stage('Build & Test') {
+        stage('Build & Test in Docker') {
+            agent {
+                docker {
+                    image 'dydko/maven-playwright:latest' // 👈 Twój obraz z Dockerfile
+                    args '-v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/jenkins/.m2:/root/.m2'
+                    reuseNode true
+                }
+            }
             steps {
-                echo "⚙️ Running Maven tests inside Docker..."
+                echo "⚙️ Running tests inside Docker container..."
                 sh 'mvn clean test -Dheadless=true -DrecordVideo=true'
             }
         }
@@ -45,13 +51,6 @@ pipeline {
                 echo "📦 Archiving reports and logs..."
                 archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
                 archiveArtifacts artifacts: 'target/allure-report/**', allowEmptyArchive: true
-            }
-        }
-
-        stage('Fix Permissions') {
-            steps {
-                echo "🛠️ Fixing permissions for Allure results..."
-                sh 'chmod -R 777 target/allure-results || true'
             }
         }
 
