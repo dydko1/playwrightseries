@@ -3,7 +3,7 @@ pipeline {
         docker {
             image 'maven:3.9.9-eclipse-temurin-21'
             // Użyj lokalnego cache Mavena i dostęp do socka Dockera
-            args '-u root -v /var/lib/jenkins/.m2:/root/.m2 -v /var/run/docker.sock:/var/run/docker.sock'
+            args '-u 121:125 -v /var/lib/jenkins/.m2:/root/.m2 -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
@@ -72,6 +72,7 @@ pipeline {
 
     stage('Fix Permissions') {
         steps {
+
             echo '🔧 Fixing permissions for Allure results...'
             sh 'sudo chown -R jenkins:jenkins target/allure-results || true'
             sh 'sudo chmod -R 777 target/allure-results || true'
