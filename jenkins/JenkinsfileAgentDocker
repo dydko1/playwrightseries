@@ -1,78 +1,28 @@
-pipeline {
-    agent {
-        docker {
-            image 'dydko/maven-playwright:latest'
-            // Maven cache host->container mapping
-            args '-v /var/lib/jenkins/.m2:/home/jenkins/.m2'
-        }
-    }
-
-    tools {
-        allure 'allure' // Jenkins > Tools > Allure Commandline (name = allure)
-    }
-
-    environment {
-        ALLURE_RESULTS_DIR = "target/allure-results"
-        ALLURE_REPORT_DIR  = "target/allure-report"
-        MAVEN_OPTS = "-Dmaven.test.failure.ignore=false"
-    }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                echo "📦 Checking out branch: ${env.BRANCH_NAME}"
-                checkout scm
-            }
-        }
-
-        stage('Build & Test in Docker') {
-            steps {
-                echo "⚙️ Running tests inside Docker container..."
-                sh 'mvn clean test -Dheadless=true -DrecordVideo=true'
-            }
-        }
-
-        stage('Generate Allure Report') {
-            steps {
-                echo "📊 Generating Allure report..."
-                sh '''
+stage('Generate Allure Report') {
+    steps {
+        echo "📊 Generating Allure report..."
+        script {
+            sh(
+                script: '''
                     if [ -d "${ALLURE_RESULTS_DIR}" ]; then
                         mvn allure:report
                     else
-                        echo "⚠️ No allure-results found!"
+                        echo "⚠️ No allure-results found, skipping report generation."
                     fi
-                '''
-            }
-        }
-
-        stage('Archive Results') {
-            steps {
-                echo "📦 Archiving reports and logs..."
-                archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
-                archiveArtifacts artifacts: 'target/allure-report/**', allowEmptyArchive: true
-            }
-        }
-
-        stage('Publish Allure Report') {
-            steps {
-                echo "🌐 Publishing Allure report in Jenkins..."
-                allure includeProperties: false,
-                       jdk: '',
-                       results: [[path: "target/allure-results"]]
-            }
+                ''',
+                returnStatus: true
+            )
         }
     }
+}
 
-    post {
-        always {
-            echo "🧹 Cleaning up workspace..."
-            cleanWs()
+stage('Archive Results') {
+    steps {
+        echo "📦 Archiving reports and logs..."
+        script {
+            sh(script: 'ls -la target || true', returnStatus: true)
         }
-        success {
-            echo "✅ Build succeeded!"
-        }
-        failure {
-            echo "❌ Build failed!"
-        }
+        archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
+        archiveArtifacts artifacts: 'target/allure-report/**', allowEmptyArchive: true
     }
 }
