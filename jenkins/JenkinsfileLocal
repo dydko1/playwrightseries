@@ -1,6 +1,10 @@
 pipeline {
     agent any   // uruchom na maszynie, gdzie działa Jenkins
 
+    tools {
+        allure 'allure' // 👈 nazwa z konfiguracji Tools > Allure Commandline
+    }
+
     environment {
         MAVEN_OPTS = "-Dmaven.test.failure.ignore=false"
         ALLURE_RESULTS_DIR = "target/allure-results"
