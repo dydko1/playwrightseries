@@ -2,19 +2,20 @@ pipeline {
     agent {
         docker {
             image 'dydko/maven-playwright:latest'
-            // Maven cache host->container mapping
-            args '-v /var/lib/jenkins/.m2:/home/jenkins/.m2'
+            args '-v /var/lib/jenkins/.m2:/home/jenkins/.m2' // cache Maven dependencies
         }
     }
 
     tools {
-        allure 'allure' // Jenkins > Tools > Allure Commandline (name = allure)
+        jdk 'JDK_21'
+        maven 'Maven_3.9'
+        allure 'allure' // Tools → Allure Commandline
     }
 
     environment {
+        MAVEN_OPTS = "-Dmaven.test.failure.ignore=false"
         ALLURE_RESULTS_DIR = "target/allure-results"
         ALLURE_REPORT_DIR  = "target/allure-report"
-        MAVEN_OPTS = "-Dmaven.test.failure.ignore=false"
     }
 
     stages {
@@ -27,46 +28,38 @@ pipeline {
 
         stage('Build & Test in Docker') {
             steps {
-                echo "⚙️ Running tests inside Docker container..."
+                echo "⚙️ Running Playwright tests inside Docker container..."
                 sh 'mvn clean test -Dheadless=true -DrecordVideo=true || true'
             }
         }
 
-       stage('Generate Allure Report') {
-           steps {
-               echo "📊 Generating Allure report..."
-               script {
-                   sh(
-                       script: '''
-                           if [ -d "${ALLURE_RESULTS_DIR}" ]; then
-                               mvn allure:report
-                           else
-                               echo "⚠️ No allure-results found, skipping report generation."
-                           fi
-                       ''',
-                       returnStatus: true
-                   )
-               }
-           }
-       }
+        stage('Generate Allure Report') {
+            steps {
+                echo "📊 Generating Allure report..."
+                sh '''
+                    if [ -d "${ALLURE_RESULTS_DIR}" ]; then
+                        mvn allure:report
+                    else
+                        echo "⚠️ No allure-results found, skipping report generation."
+                    fi
+                '''
+            }
+        }
 
-       stage('Archive Results') {
-           steps {
-               echo "📦 Archiving reports and logs..."
-               script {
-                   sh(script: 'ls -la target || true', returnStatus: true)
-               }
-               archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
-               archiveArtifacts artifacts: 'target/allure-report/**', allowEmptyArchive: true
-           }
-       }
-
+        stage('Archive Results') {
+            steps {
+                echo "📦 Archiving reports and logs..."
+                sh 'ls -la target || true'
+                archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'target/allure-report/**', allowEmptyArchive: true
+            }
+        }
 
         stage('Publish Allure Report') {
             steps {
                 echo "🌐 Publishing Allure report in Jenkins..."
                 allure includeProperties: false,
-                       jdk: '',
+                       jdk: 'JDK_21',
                        results: [[path: "target/allure-results"]]
             }
         }
