@@ -48,6 +48,13 @@ pipeline {
             }
         }
 
+        stage('Fix Permissions') {
+            steps {
+                echo "🛠️ Fixing permissions for Allure results..."
+                sh 'chmod -R 777 target/allure-results || true'
+            }
+        }
+
         stage('Publish Allure Report') {
             steps {
                 echo "🌐 Publishing Allure report in Jenkins..."
