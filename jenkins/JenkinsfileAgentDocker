@@ -1,14 +1,20 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'dydko/maven-playwright:latest'
+            // Maven cache host->container mapping
+            args '-v /var/lib/jenkins/.m2:/home/jenkins/.m2'
+        }
+    }
 
     tools {
-        allure 'allure' // 👈 musi odpowiadać nazwie z Manage Jenkins → Tools → Allure Commandline
+        allure 'allure' // Jenkins > Tools > Allure Commandline (name = allure)
     }
 
     environment {
-        MAVEN_OPTS = "-Dmaven.test.failure.ignore=false"
         ALLURE_RESULTS_DIR = "target/allure-results"
-        ALLURE_REPORT_DIR = "target/allure-report"
+        ALLURE_REPORT_DIR  = "target/allure-report"
+        MAVEN_OPTS = "-Dmaven.test.failure.ignore=false"
     }
 
     stages {
@@ -20,13 +26,6 @@ pipeline {
         }
 
         stage('Build & Test in Docker') {
-            agent {
-                docker {
-                    image 'dydko/maven-playwright:latest' // 👈 Twój obraz z Dockerfile
-                    args '-v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/jenkins/.m2:/root/.m2'
-                    reuseNode true
-                }
-            }
             steps {
                 echo "⚙️ Running tests inside Docker container..."
                 sh 'mvn clean test -Dheadless=true -DrecordVideo=true'
@@ -40,7 +39,7 @@ pipeline {
                     if [ -d "${ALLURE_RESULTS_DIR}" ]; then
                         mvn allure:report
                     else
-                        echo "⚠️ No allure-results directory found!"
+                        echo "⚠️ No allure-results found!"
                     fi
                 '''
             }
