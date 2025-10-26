@@ -22,7 +22,7 @@ pipeline {
         stage('Build & Test') {
             steps {
                 echo "⚙️ Running Maven tests on Jenkins host..."
-                sh 'mvn clean test -Dheadless=true -DrecordVideo=false'
+                sh 'mvn clean test -Dheadless=true -DrecordVideo=true'
             }
         }
 
