@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.9-eclipse-temurin-21'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any   // uruchom na maszynie, gdzie działa Jenkins
 
     environment {
         MAVEN_OPTS = "-Dmaven.test.failure.ignore=false"
@@ -22,7 +17,7 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                echo "⚙️ Running Maven tests inside Docker..."
+                echo "⚙️ Running Maven tests on Jenkins host..."
                 sh 'mvn clean test -Dheadless=true -DrecordVideo=false'
             }
         }
