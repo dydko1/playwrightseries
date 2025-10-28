@@ -48,12 +48,22 @@ pipeline {
             }
         }
 
-        stage('Publish Allure Report') {
-            steps {
-                echo "🌐 Publishing Allure report..."
-                allure includeProperties: false, jdk: 'JDK_21', results: [[path: "target/allure-results"]]
-            }
-        }
+     stage('Publish Allure Report') {
+         steps {
+             echo "🌐 Generating Allure report on Jenkins host..."
+             sh '''
+                 if [ -d "target/allure-results" ]; then
+                     /var/lib/jenkins/tools/ru.yandex.qatools.allure.jenkins.tools.AllureCommandlineInstallation/allure/bin/allure generate target/allure-results -o target/allure-report --clean
+                 else
+                     echo "⚠️ No allure-results found."
+                 fi
+             '''
+             allure includeProperties: false,
+                    jdk: 'JDK_21',
+                    results: [[path: "target/allure-results"]]
+         }
+ }
+
     }
 
     post {
