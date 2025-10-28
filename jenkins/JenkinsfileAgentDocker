@@ -3,7 +3,7 @@ pipeline {
     docker {
       image 'dydko/maven-playwright:latest'
       reuseNode true
-      // dopasuj UID:GID jeśli u Ciebie inne niż 121:125
+      // dopasuj UID:GID jeśli inne
       args '-u 121:125 ' +
            '-v $JENKINS_HOME/.m2:/home/jenkins/.m2 ' +
            '-v $JENKINS_HOME/tools:/var/lib/jenkins/tools'
@@ -13,7 +13,6 @@ pipeline {
   options {
     skipDefaultCheckout(true)
     timestamps()
-    ansiColor('xterm')
   }
 
   environment {
@@ -39,6 +38,7 @@ pipeline {
       }
       post {
         always {
+          // nawet jeśli brak testów, nie wywali builda
           junit skipPublishingChecks: true, testResults: 'target/surefire-reports/*.xml'
           archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
         }
@@ -49,12 +49,16 @@ pipeline {
       when { expression { fileExists('target/allure-results') } }
       steps {
         echo '🌐 Publishing Allure report...'
+        // plugin Allure użyje CLI z $JENKINS_HOME/tools (podmontowane do kontenera)
         allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
       }
     }
   }
 
   post {
-    always { cleanWs() }
+    always {
+      echo '🧹 Cleaning workspace...'
+      cleanWs()
+    }
   }
 }
