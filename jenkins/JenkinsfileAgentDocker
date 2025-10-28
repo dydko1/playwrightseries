@@ -1,10 +1,10 @@
 pipeline {
-    agent {
-        docker {
-            image 'dydko/maven-playwright:latest'
-            args '-v /var/lib/jenkins/.m2:/home/jenkins/.m2' // Cache Maven
-        }
+agent {
+    docker {
+        image 'dydko/maven-playwright:latest'
+        args '-v /var/lib/jenkins/.m2:/home/jenkins/.m2'
     }
+}
 
     tools {
         jdk 'JDK_21'
