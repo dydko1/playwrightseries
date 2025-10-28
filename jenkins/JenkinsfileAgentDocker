@@ -1,79 +1,60 @@
 pipeline {
-    agent {
-        docker {
-            image 'dydko/maven-playwright:latest'
-            args '-v /var/lib/jenkins/.m2:/home/jenkins/.m2'
-        }
+  agent {
+    docker {
+      image 'dydko/maven-playwright:latest'
+      reuseNode true
+      // dopasuj UID:GID jeśli u Ciebie inne niż 121:125
+      args '-u 121:125 ' +
+           '-v $JENKINS_HOME/.m2:/home/jenkins/.m2 ' +
+           '-v $JENKINS_HOME/tools:/var/lib/jenkins/tools'
+    }
+  }
+
+  options {
+    skipDefaultCheckout(true)
+    timestamps()
+    ansiColor('xterm')
+  }
+
+  environment {
+    JAVA_HOME = '/opt/java/openjdk'
+    PATH = "${JAVA_HOME}/bin:/usr/share/maven/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    MAVEN_CONFIG = '/home/jenkins/.m2'
+    PLAYWRIGHT_BROWSERS_PATH = '/ms-playwright'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
     }
 
-    tools {
-        jdk 'JDK_21'
-        maven 'Maven_3.9'
-        allure 'allure'
-    }
-
-    environment {
-        MAVEN_OPTS = "-Dmaven.test.failure.ignore=false"
-        ALLURE_RESULTS_DIR = "target/allure-results"
-        ALLURE_REPORT_DIR = "target/allure-report"
-    }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                echo "📦 Checking out branch: ${env.BRANCH_NAME}"
-                checkout scm
-            }
-        }
-
-        stage('Build & Test in Docker') {
-            steps {
-                echo "⚙️ Running Playwright tests inside Docker..."
-                sh 'mvn clean test -Dheadless=true -DrecordVideo=true || true'
-            }
-        }
-
-        stage('Generate Allure Report') {
-            steps {
-                echo "📊 Generating Allure report..."
-                sh '''
-                    if [ -d "target/allure-results" ]; then
-                        mvn allure:report
-                    else
-                        echo "⚠️ No allure-results found, skipping report generation."
-                    fi
-                '''
-            }
-        }
-
-        stage('Archive Results') {
-            steps {
-                echo "📦 Archiving reports..."
-                archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
-                archiveArtifacts artifacts: 'target/allure-report/**', allowEmptyArchive: true
-            }
-        }
-
-        stage('Publish Allure Report') {
-            steps {
-                echo "🌐 Publishing Allure report..."
-                allure includeProperties: false,
-                       jdk: 'JDK_21',
-                       results: [[path: "target/allure-results"]]
-            }
-        }
-    }
-
-    post {
+    stage('Build & Test') {
+      steps {
+        echo '⚙️ Running Playwright tests inside Docker...'
+        sh 'java -version && mvn -v'
+        sh 'node -v && npx playwright --version'
+        sh 'mvn -B clean test -Dheadless=true -DrecordVideo=true'
+      }
+      post {
         always {
-            echo "🧹 Cleaning workspace..."
-            cleanWs()
+          junit skipPublishingChecks: true, testResults: 'target/surefire-reports/*.xml'
+          archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
         }
-        success {
-            echo "✅ Build succeeded!"
-        }
-        failure {
-            echo "❌ Build failed!"
-        }
+      }
     }
+
+    stage('Publish Allure Report') {
+      when { expression { fileExists('target/allure-results') } }
+      steps {
+        echo '🌐 Publishing Allure report...'
+        allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
+      }
+    }
+  }
+
+  post {
+    always { cleanWs() }
+  }
 }
