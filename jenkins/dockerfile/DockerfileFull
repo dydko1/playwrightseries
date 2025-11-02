@@ -1,43 +1,47 @@
 # ==============================
-# 🧱 DockerfileFull — Playwright + Maven + Node + Allure + Jenkins user
+# DockerfileFull — Playwright + Maven + Node + Allure + Jenkins user
 # ==============================
 
-# Bazowy obraz: Playwright z JDK 21 i przeglądarkami (stabilny, nie nightly)
+# Bazowy obraz Microsoft Playwright (z JDK i browser deps)
 FROM mcr.microsoft.com/playwright/java:v1.55.0-jammy
 
-# Ustawienia środowiska
+# Locale i środowisko
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
     DEBIAN_FRONTEND=noninteractive
 
-# Aktualizacja systemu i instalacja narzędzi systemowych
+# Aktualizacja systemu i instalacja narzędzi
 RUN apt-get update && apt-get install -y \
-    wget curl git unzip sudo locales tzdata \
+    wget curl git unzip sudo locales tzdata ca-certificates gnupg \
  && locale-gen en_US.UTF-8 \
- && update-locale LANG=en_US.UTF-8 \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+ && update-locale LANG=en_US.UTF-8
 
-# Instalacja Maven + Node + Allure CLI (manualnie, bez sudo)
-RUN apt-get update && apt-get install -y maven nodejs npm \
- && npm install -g allure-commandline --force \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+# =======================================================
+# 🧩 Instalacja Node.js 20 + NPM + Maven + Allure
+# =======================================================
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+ && apt-get install -y nodejs maven \
+ && npm install -g allure-commandline@2.29.0 --force \
+ && node -v && npm -v && mvn -v
 
-# Tworzenie użytkownika Jenkins i katalogów roboczych
+# =======================================================
+# 🧩 Tworzenie użytkownika Jenkins i katalogów roboczych
+# =======================================================
 RUN groupadd -g 125 jenkins && \
     useradd -m -u 121 -g 125 jenkins && \
     mkdir -p /home/jenkins/.m2 /home/jenkins/app /ms-playwright && \
     chown -R jenkins:jenkins /home/jenkins /ms-playwright
 
-# Instalacja przeglądarek Playwright (Chrome, Firefox, WebKit)
+# =======================================================
+# 🧩 Instalacja przeglądarek Playwright (Chrome, Firefox, WebKit)
+# =======================================================
 RUN npx --yes playwright install --with-deps
 
-# Przełączenie na użytkownika Jenkins
+# =======================================================
+# 🧩 Użytkownik Jenkins i katalog roboczy
+# =======================================================
 USER jenkins
-
-# Katalog roboczy
 WORKDIR /home/jenkins/app
 
-# Domyślna komenda
 CMD ["bash"]
