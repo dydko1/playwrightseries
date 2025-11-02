@@ -2,55 +2,58 @@ pipeline {
     agent {
         docker {
             image 'dydko/maven-playwright:full'
-            args '-u root:root'
+            args '-u 121:125'
         }
+    }
+
+    environment {
+        HEADLESS = 'true'
+        RECORD_VIDEO = 'true'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo "📦 Checking out repository..."
+                echo '📦 Checking out repository...'
                 checkout scm
             }
         }
 
         stage('Build & Test') {
             steps {
-                echo "🚀 Running Playwright tests (browsers preinstalled)..."
+                echo '🚀 Running Playwright tests (browsers preinstalled)...'
                 sh '''
                     set -eux
                     java -version
                     mvn -v
                     node -v
+                    allure --version
                     npx playwright --version
-                    mvn -B clean test -Dheadless=true -DrecordVideo=true -Pci
+                    mvn -B clean test -Dheadless=${HEADLESS} -DrecordVideo=${RECORD_VIDEO} -Pci
                 '''
             }
         }
 
         stage('Allure Report') {
             steps {
-                echo "📊 Generating Allure report..."
+                echo '📊 Generating Allure report (using container CLI)...'
                 sh '''
-                    allure generate target/allure-results -c -o allure-report || true
+                    allure generate target/allure-results -c -o target/allure-report || true
                 '''
-                allure([
-                    includeProperties: false,
-                    jdk: '',
-                    results: [[path: 'target/allure-results']],
-                    reportBuildPolicy: 'ALWAYS'
-                ])
             }
         }
     }
 
     post {
         always {
-            echo "🧹 Cleaning workspace..."
+            echo '🧹 Cleaning workspace...'
             cleanWs()
         }
+        success {
+            echo '✅ Build succeeded!'
+        }
         failure {
-            echo "❌ Build failed. Check test reports or logs."
+            echo '❌ Build failed. Check test reports or logs.'
         }
     }
 }
