@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /ms-playwright /home/${USER}/.m2 && chown -R ${USER}:${USER} /ms-playwright /home/${USER}
 
 # Instalacja Playwrighta i przeglądarek (Chromium, Firefox, WebKit)
-RUN npx --yes playwright install --with-deps
+RUN npx --yes playwright install --with-deps && chown -R jenkins:jenkins /ms-playwright
 
 USER ${USER}
 WORKDIR /home/${USER}/app
