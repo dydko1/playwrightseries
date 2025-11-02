@@ -1,35 +1,31 @@
-# ==============================
-#  DockerfileFull – dydko/maven-playwright:full
-# ==============================
+# ===========================================
+# Playwright + Java 21 + Maven + Allure image
+# ===========================================
 
+# Obraz bazowy Playwright + Java (stabilna wersja)
 FROM mcr.microsoft.com/playwright/java:v1.55.0-jammy
 
-# Instalacja Maven + Node + Allure + dodatkowe narzędzia
-USER root
+# Wyłączanie interaktywnych pytań (np. timezone)
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Instalacja Maven, Node, Allure CLI i narzędzi systemowych
 RUN apt-get update && apt-get install -y \
-    wget curl git unzip sudo locales tzdata && \
+    wget curl git unzip sudo locales tzdata ca-certificates gnupg && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 && \
+    wget -qO- https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g allure-commandline@2.29.0 --force && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Ustawienia środowiska
-ENV LANG=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8 \
-    JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 \
-    PATH=$JAVA_HOME/bin:$PATH
+# Tworzenie użytkownika Jenkins i katalogów roboczych
+RUN groupadd -g 125 jenkins && \
+    useradd -m -u 121 -g 125 jenkins && \
+    mkdir -p /home/jenkins/.m2 /home/jenkins/app /ms-playwright && \
+    chown -R jenkins:jenkins /home/jenkins /ms-playwright
 
-# Instalacja Maven
-RUN wget https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.zip && \
-    unzip apache-maven-3.9.9-bin.zip -d /opt && \
-    ln -s /opt/apache-maven-3.9.9/bin/mvn /usr/bin/mvn && \
-    rm apache-maven-3.9.9-bin.zip
+# Instalacja przeglądarek Playwright (Chrome, Firefox, WebKit)
+USER jenkins
+RUN npx --yes playwright install --with-deps
 
-# Instalacja Node.js (v20.x)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g npm@latest
-
-# Instalacja Allure CLI 2.30.0
-RUN wget https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.zip && \
-    unzip allure-2.30.0.zip -d /opt/ && \
-    l
+WORKDIR /home/jenkins/app

@@ -1,45 +1,43 @@
 pipeline {
-    agent {
-        docker {
-            image 'dydko/maven-playwright:full'
-            args '-u 121:125'
-        }
-    }
+    agent any
 
     environment {
-        HEADLESS = 'true'
-        RECORD_VIDEO = 'true'
+        IMAGE = 'dydko/maven-playwright:full'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo '📦 Checking out repository...'
-                checkout scm
+                timestamps {
+                    checkout scm
+                }
             }
         }
 
         stage('Build & Test') {
             steps {
-                echo '🚀 Running Playwright tests (browsers preinstalled)...'
-                sh '''
-                    set -eux
-                    java -version
-                    mvn -v
-                    node -v
-                    allure --version
-                    npx playwright --version
-                    mvn -B clean test -Dheadless=${HEADLESS} -DrecordVideo=${RECORD_VIDEO} -Pci
-                '''
+                timestamps {
+                    echo '🚀 Running Playwright tests (browsers preinstalled)...'
+                    script {
+                        docker.image("${IMAGE}").inside("-u 121:125") {
+                            sh 'java -version'
+                            sh 'mvn -v'
+                            sh 'node -v'
+                            sh 'npx playwright --version'
+                            sh 'mvn -B clean test -Dheadless=true -DrecordVideo=true -Pci'
+                        }
+                    }
+                }
             }
         }
 
         stage('Allure Report') {
+            when { expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') } }
             steps {
-                echo '📊 Generating Allure report (using container CLI)...'
-                sh '''
-                    allure generate target/allure-results -c -o target/allure-report || true
-                '''
+                echo '📊 Generating Allure report...'
+                allure includeProperties: false,
+                       jdk: '',
+                       results: [[path: 'target/allure-results']]
             }
         }
     }
@@ -50,7 +48,7 @@ pipeline {
             cleanWs()
         }
         success {
-            echo '✅ Build succeeded!'
+            echo '✅ Build finished successfully!'
         }
         failure {
             echo '❌ Build failed. Check test reports or logs.'
