@@ -1,11 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'dydko/maven-playwright:full'
-      reuseNode true
-      args '-u 121:125'
-    }
-  }
+  agent any
 
   options {
     timestamps()
@@ -14,46 +8,57 @@ pipeline {
 
   environment {
     JAVA_HOME = '/opt/java/openjdk'
-    PATH = "${JAVA_HOME}/bin:/usr/share/maven/bin:/usr/local/bin:/usr/bin:/bin"
-    MAVEN_CONFIG = '/home/jenkins/.m2'
     PLAYWRIGHT_BROWSERS_PATH = '/ms-playwright'
+    BRANCH_NAME = 'feature/k8pocplaywright'
+    DOCKER_IMAGE = 'dydko/maven-playwright:full'
   }
 
   stages {
     stage('Checkout') {
       steps {
         echo '📦 Checking out repository...'
-        checkout scm
+        git branch: "${BRANCH_NAME}", url: 'https://github.com/dydko1/playwrightseries'
       }
     }
 
-    stage('Build & Test') {
+    stage('Build & Test (in Docker)') {
       steps {
-        echo '🚀 Running Playwright tests (browsers preinstalled)...'
-        sh '''
-          set -eux
-          java -version
-          mvn -v
-          node -v
-          npx playwright --version
-          mvn -B clean test -Dheadless=true -DrecordVideo=true -Pci
-        '''
+        script {
+          docker.image(env.DOCKER_IMAGE).inside('-u 121:125') {
+            sh '''
+              set -eux
+              echo "🚀 Running Playwright tests (browsers preinstalled)..."
+              java -version
+              mvn -v
+              node -v || true
+              npx playwright --version || true
+
+              mvn -B clean test -Pci \
+                 -Dheadless=true \
+                 -DrecordVideo=true
+            '''
+          }
+        }
       }
       post {
         always {
-          junit testResults: 'target/surefire-reports/*.xml', skipPublishingChecks: true
-          archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
+          // raporty testów + artefakty do Allure/filmów
+          junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'target/allure-results/**,target/videos/**,target/screenshots/**'
         }
       }
     }
 
+    // Generujemy Allure już poza kontenerem
     stage('Allure Report') {
-      when {
-        expression { fileExists('target/allure-results') }
-      }
       steps {
         echo '📊 Generating Allure report...'
-        allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
+        allure(
+          includeProperties: false,
+          jdk: '',
+          results: [[path: 'target/allure-results']],
+          reportBuildPolicy: 'ALWAYS'
+        )
       }
     }
   }

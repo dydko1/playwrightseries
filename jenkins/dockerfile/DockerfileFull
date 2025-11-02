@@ -5,32 +5,35 @@ ARG UID=121
 ARG GID=125
 ARG USER=jenkins
 
-# Użytkownik Jenkins (dla zgodności z Jenkins pipeline -u 121:125)
+# Użytkownik Jenkins (zgodny z -u 121:125 w pipeline)
 RUN groupadd -g ${GID} ${USER} && useradd -m -u ${UID} -g ${GID} ${USER}
 
 ENV JAVA_HOME=/opt/java/openjdk
-ENV PATH="${JAVA_HOME}/bin:/usr/share/maven/bin:${PATH}"
 ENV MAVEN_CONFIG=/home/${USER}/.m2
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+ENV PWDEBUG=0
 
-# ===== DEPS =====
+# System deps potrzebne dla przeglądarek
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      curl ca-certificates gnupg unzip wget git \
-      libglib2.0-0 libnss3 libnspr4 libdbus-1-3 libatk1.0-0 \
-      libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 \
-      libx11-6 libxcomposite1 libxdamage1 libxext6 libxfixes3 \
-      libxrandr2 libgbm1 libpango-1.0-0 libcairo2 \
-      libxshmfence1 libx11-xcb1 libxrender1 libasound2t64 \
-      libgtk-3-0 libgdk-pixbuf2.0-0 \
- && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
- && apt-get install -y --no-install-recommends nodejs \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+    ca-certificates curl git unzip xvfb \
+    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdbus-1-3 libdrm2 \
+    libxkbcommon0 libatspi2.0-0 libxshmfence1 libgbm1 libgtk-3-0 \
+    libasound2 fonts-liberation libcurl4 \
+ && rm -rf /var/lib/apt/lists/*
 
-# ===== PLAYWRIGHT + BROWSERS =====
-RUN mkdir -p /ms-playwright /home/${USER}/.m2 && chown -R ${USER}:${USER} /ms-playwright /home/${USER}
+# Node.js 20 (przydaje się do narzędzi i npx playwright --version)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+ && apt-get update && apt-get install -y --no-install-recommends nodejs \
+ && rm -rf /var/lib/apt/lists/*
 
-# Instalacja Playwrighta i przeglądarek (Chromium, Firefox, WebKit)
-RUN npx --yes playwright install --with-deps && chown -R jenkins:jenkins /ms-playwright
+# Preinstalacja przeglądarek Playwright (Node) do współdzielonej ścieżki
+# (Java Playwright i tak pobierze swoje binaria jeśli będą potrzebne,
+# ale ten cache często wystarcza)
+RUN mkdir -p ${PLAYWRIGHT_BROWSERS_PATH} \
+ && npx --yes playwright@1.56.1 install --with-deps chromium firefox webkit \
+ && chown -R ${USER}:${USER} ${PLAYWRIGHT_BROWSERS_PATH}
 
 USER ${USER}
-WORKDIR /home/${USER}/app
+WORKDIR /workspace
+
+CMD ["bash"]
