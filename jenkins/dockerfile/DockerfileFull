@@ -2,7 +2,7 @@
 #  DockerfileFull – dydko/maven-playwright:full
 # ==============================
 
-FROM mcr.microsoft.com/playwright/java:v1.56.1-jammy
+FROM mcr.microsoft.com/playwright/java:v1.55.0-jammy
 
 # Instalacja Maven + Node + Allure + dodatkowe narzędzia
 USER root
