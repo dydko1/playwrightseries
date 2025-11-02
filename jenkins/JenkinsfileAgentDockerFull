@@ -1,0 +1,53 @@
+pipeline {
+  agent {
+    docker {
+      image 'dydko/maven-playwright:full'
+      reuseNode true
+      args '-u 121:125 ' +
+           '-v $JENKINS_HOME/.m2:/home/jenkins/.m2 ' +
+           '-v $JENKINS_HOME/tools:/var/lib/jenkins/tools'
+    }
+  }
+
+  options { timestamps(); skipDefaultCheckout(true) }
+
+  environment {
+    JAVA_HOME = '/opt/java/openjdk'
+    PATH = "${JAVA_HOME}/bin:/usr/share/maven/bin:/usr/local/bin:/usr/bin:/bin"
+    MAVEN_CONFIG = '/home/jenkins/.m2'
+    PLAYWRIGHT_BROWSERS_PATH = '/ms-playwright'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+
+    stage('Build & Test') {
+      steps {
+        echo '🚀 Running Playwright tests (browsers preinstalled)...'
+        sh 'java -version && mvn -v'
+        sh 'node -v && npx playwright --version'
+        sh 'mvn -B clean test -Dheadless=true -DrecordVideo=true -Pci'
+      }
+      post {
+        always {
+          junit testResults: 'target/surefire-reports/*.xml', skipPublishingChecks: true
+          archiveArtifacts artifacts: 'target/allure-results/**', allowEmptyArchive: true
+        }
+      }
+    }
+
+    stage('Allure Report') {
+      when { expression { fileExists('target/allure-results') } }
+      steps {
+        echo '📊 Publishing Allure report...'
+        allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
+      }
+    }
+  }
+
+  post {
+    always { cleanWs() }
+  }
+}
