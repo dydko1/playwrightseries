@@ -1,22 +1,28 @@
-# ===========================================
-# Playwright + Java 21 + Maven + Allure image
-# ===========================================
+# ==============================
+# 🧱 DockerfileFull — Playwright + Maven + Node + Allure + Jenkins user
+# ==============================
 
-# Obraz bazowy Playwright + Java (stabilna wersja)
+# Bazowy obraz: Playwright z JDK 21 i przeglądarkami (stabilny, nie nightly)
 FROM mcr.microsoft.com/playwright/java:v1.55.0-jammy
 
-# Wyłączanie interaktywnych pytań (np. timezone)
-ENV DEBIAN_FRONTEND=noninteractive
+# Ustawienia środowiska
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8 \
+    DEBIAN_FRONTEND=noninteractive
 
-# Instalacja Maven, Node, Allure CLI i narzędzi systemowych
+# Aktualizacja systemu i instalacja narzędzi systemowych
 RUN apt-get update && apt-get install -y \
-    wget curl git unzip sudo locales tzdata ca-certificates gnupg && \
-    locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8 && \
-    wget -qO- https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g allure-commandline@2.29.0 --force && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    wget curl git unzip sudo locales tzdata \
+ && locale-gen en_US.UTF-8 \
+ && update-locale LANG=en_US.UTF-8 \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+# Instalacja Maven + Node + Allure CLI (manualnie, bez sudo)
+RUN apt-get update && apt-get install -y maven nodejs npm \
+ && npm install -g allure-commandline --force \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Tworzenie użytkownika Jenkins i katalogów roboczych
 RUN groupadd -g 125 jenkins && \
@@ -25,7 +31,13 @@ RUN groupadd -g 125 jenkins && \
     chown -R jenkins:jenkins /home/jenkins /ms-playwright
 
 # Instalacja przeglądarek Playwright (Chrome, Firefox, WebKit)
-USER jenkins
 RUN npx --yes playwright install --with-deps
 
+# Przełączenie na użytkownika Jenkins
+USER jenkins
+
+# Katalog roboczy
 WORKDIR /home/jenkins/app
+
+# Domyślna komenda
+CMD ["bash"]
