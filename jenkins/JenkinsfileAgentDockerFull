@@ -1,78 +1,56 @@
 pipeline {
-  agent any
-
-  options {
-    timestamps()
-    skipDefaultCheckout(true)
-  }
-
-  environment {
-    JAVA_HOME = '/opt/java/openjdk'
-    PLAYWRIGHT_BROWSERS_PATH = '/ms-playwright'
-    BRANCH_NAME = 'feature/k8pocplaywright'
-    DOCKER_IMAGE = 'dydko/maven-playwright:full'
-  }
-
-  stages {
-    stage('Checkout') {
-      steps {
-        echo '📦 Checking out repository...'
-        git branch: "${BRANCH_NAME}", url: 'https://github.com/dydko1/playwrightseries'
-      }
+    agent {
+        docker {
+            image 'dydko/maven-playwright:full'
+            args '-u root:root'
+        }
     }
 
-    stage('Build & Test (in Docker)') {
-      steps {
-        script {
-          docker.image(env.DOCKER_IMAGE).inside('-u 121:125') {
-            sh '''
-              set -eux
-              echo "🚀 Running Playwright tests (browsers preinstalled)..."
-              java -version
-              mvn -v
-              node -v || true
-              npx playwright --version || true
-
-              mvn -B clean test -Pci \
-                 -Dheadless=true \
-                 -DrecordVideo=true
-            '''
-          }
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "📦 Checking out repository..."
+                checkout scm
+            }
         }
-      }
-      post {
+
+        stage('Build & Test') {
+            steps {
+                echo "🚀 Running Playwright tests (browsers preinstalled)..."
+                sh '''
+                    set -eux
+                    java -version
+                    mvn -v
+                    node -v
+                    npx playwright --version
+                    mvn -B clean test -Dheadless=true -DrecordVideo=true -Pci
+                '''
+            }
+        }
+
+        stage('Allure Report') {
+            steps {
+                echo "📊 Generating Allure report..."
+                sh '''
+                    allure generate target/allure-results -c -o allure-report || true
+                '''
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    results: [[path: 'target/allure-results']],
+                    reportBuildPolicy: 'ALWAYS'
+                ])
+            }
+        }
+    }
+
+    post {
         always {
-          // raporty testów + artefakty do Allure/filmów
-          junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'target/allure-results/**,target/videos/**,target/screenshots/**'
+            echo "🧹 Cleaning workspace..."
+            cleanWs()
         }
-      }
+        failure {
+            echo "❌ Build failed. Check test reports or logs."
+        }
     }
-
-    // Generujemy Allure już poza kontenerem
-    stage('Allure Report') {
-      steps {
-        echo '📊 Generating Allure report...'
-        allure(
-          includeProperties: false,
-          jdk: '',
-          results: [[path: 'target/allure-results']],
-          reportBuildPolicy: 'ALWAYS'
-        )
-      }
-    }
-  }
-
-  post {
-    always {
-      echo '🧹 Cleaning workspace...'
-      cleanWs()
-    }
-    success {
-      echo '✅ Build finished successfully!'
-    }
-    failure {
-      echo '❌ Build failed. Check test reports or logs.'
-    }
-  }
 }
